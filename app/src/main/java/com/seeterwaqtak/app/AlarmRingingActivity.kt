@@ -16,6 +16,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 
 class AlarmRingingActivity: ComponentActivity() {
@@ -31,13 +33,13 @@ class AlarmRingingActivity: ComponentActivity() {
    MaterialTheme {
     Surface(Modifier.fillMaxSize(),color=MaterialTheme.colorScheme.surface) {
      Column(Modifier.fillMaxSize().padding(28.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.Center) {
-      Text("حان وقت مهمتك",style=MaterialTheme.typography.headlineMedium)
+      Text("حان وقت مهمتك",style=MaterialTheme.typography.headlineMedium,color=Color(0xFF8B1E3F))
       Spacer(Modifier.height(18.dp))
-      Text(title,style=MaterialTheme.typography.headlineLarge)
+      Text(title,style=MaterialTheme.typography.headlineLarge,color=Color(0xFF8B1E3F))
       Spacer(Modifier.height(36.dp))
-      Button(onClick={stopAlarm(id);finish()},modifier=Modifier.fillMaxWidth()) { Text("إيقاف المنبّه") }
+      Button(onClick={stopAlarm(id);finish()},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(18.dp)) { Text("إيقاف المنبّه") }
       Spacer(Modifier.height(12.dp))
-      OutlinedButton(onClick={snooze(id,title,sound);finish()},modifier=Modifier.fillMaxWidth()) { Text("تأجيل 5 دقائق") }
+      OutlinedButton(onClick={snooze(id,title,sound);finish()},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(18.dp)) { Text("تأجيل 5 دقائق") }
      }
     }
    }
