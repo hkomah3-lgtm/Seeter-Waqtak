@@ -21,6 +21,9 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -74,17 +77,19 @@ class MainActivity : ComponentActivity() {
   if (item.enabled) AlarmStore.schedule(context, item) else AlarmStore.cancel(context, item.id)
   refresh()
  }
- MaterialTheme(colorScheme=if(dark) darkColorScheme() else lightColorScheme()) {
+ val wine = Color(0xFF8B1E3F)
+ MaterialTheme(colorScheme=lightColorScheme(primary=wine,onPrimary=Color.White,secondary=Color(0xFFB64B68),background=Color(0xFFFFF9FB),surface=Color.White,onSurface=Color(0xFF321820),surfaceVariant=Color(0xFFF7E9EE),outline=Color(0xFFE8CCD5))) {
   Scaffold(
-   topBar={ TopAppBar(title={ Column { Text("سيطر على وقتك",fontWeight=FontWeight.Bold); Text("منبّهات مهامك، في وقتها تماماً",style=MaterialTheme.typography.labelMedium) } },actions={ TextButton(onClick={dark=!dark;prefs.edit().putBoolean("dark",dark).apply()}) { Text(if(dark)"فاتح" else "داكن") } }) },
-   floatingActionButton={ FloatingActionButton(onClick={ title="";hour=8;minute=0;days=setOf(Calendar.MONDAY,Calendar.TUESDAY,Calendar.WEDNESDAY,Calendar.THURSDAY,Calendar.FRIDAY,Calendar.SATURDAY,Calendar.SUNDAY);sound=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)?.toString() ?: "";soundName="نغمة المنبّه الافتراضية";showDialog=true }) { Icon(Icons.Default.Add,contentDescription="منبّه جديد") } }
+   containerColor=Color(0xFFFFF9FB),
+   topBar={ TopAppBar(colors=TopAppBarDefaults.topAppBarColors(containerColor=Color.White,titleContentColor=wine),title={ Column { Text("سيطر على وقتك",fontWeight=FontWeight.ExtraBold); Text("منبّهات مهامك، في وقتها تماماً",style=MaterialTheme.typography.labelMedium,color=Color(0xFF9A6475)) } }) },
+   floatingActionButton={ FloatingActionButton(containerColor=wine,contentColor=Color.White,shape=RoundedCornerShape(18.dp),onClick={ title="";hour=8;minute=0;days=setOf(Calendar.MONDAY,Calendar.TUESDAY,Calendar.WEDNESDAY,Calendar.THURSDAY,Calendar.FRIDAY,Calendar.SATURDAY,Calendar.SUNDAY);sound=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)?.toString() ?: "";soundName="نغمة المنبّه الافتراضية";showDialog=true }) { Icon(Icons.Default.Add,contentDescription="منبّه جديد") } }
   ) { padding ->
    LazyColumn(Modifier.fillMaxSize().padding(padding).padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp),contentPadding=PaddingValues(bottom=90.dp)) {
     item {
-     Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
-      Text("حوّل كل مهمة إلى منبّه",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold)
+     Card(Modifier.fillMaxWidth().shadow(5.dp,RoundedCornerShape(24.dp)),shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=Color.White),elevation=CardDefaults.cardElevation(defaultElevation=2.dp)) { Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+      Text("حوّل كل مهمة إلى منبّه",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.ExtraBold,color=wine)
       Text("اختر المهمة والوقت وأيام التكرار وصوت التنبيه. سيوقظك الهاتف عند الموعد حتى عندما تكون الشاشة مغلقة.")
-      Text("عدد المنبّهات: ${alarms.size}",style=MaterialTheme.typography.labelLarge)
+      Text("عدد المنبّهات: ${alarms.size}",style=MaterialTheme.typography.labelLarge,color=wine,fontWeight=FontWeight.Bold)
      } }
     }
     if(alarms.isEmpty()) item { Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(20.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)) { Text("لا توجد منبّهات بعد",fontWeight=FontWeight.Bold);Text("اضغط زر + لإنشاء أول منبّه لمهمتك.") } } }
@@ -92,8 +97,8 @@ class MainActivity : ComponentActivity() {
      Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
       Row(verticalAlignment=Alignment.CenterVertically) {
        Column(Modifier.weight(1f)) {
-        Text(alarm.title,fontWeight=FontWeight.Bold,style=MaterialTheme.typography.titleMedium)
-        Text(String.format(Locale.getDefault(),"%02d:%02d",alarm.hour,alarm.minute),style=MaterialTheme.typography.headlineMedium)
+        Text(alarm.title,fontWeight=FontWeight.ExtraBold,style=MaterialTheme.typography.titleMedium,color=wine)
+        Text(String.format(Locale.getDefault(),"%02d:%02d",alarm.hour,alarm.minute),style=MaterialTheme.typography.headlineMedium,color=wine,fontWeight=FontWeight.ExtraBold)
        }
        Switch(checked=alarm.enabled,onCheckedChange={saveAlarm(alarm.copy(enabled=it))})
        IconButton(onClick={AlarmStore.cancel(context,alarm.id);AlarmStore.save(context,alarms.filterNot{it.id==alarm.id});refresh()}) { Icon(Icons.Default.Delete,contentDescription="حذف") }
@@ -111,7 +116,7 @@ class MainActivity : ComponentActivity() {
    text={
     Column(verticalArrangement=Arrangement.spacedBy(10.dp)) {
      OutlinedTextField(value=title,onValueChange={title=it},label={Text("اسم المهمة")},singleLine=true)
-     OutlinedButton(onClick={TimePickerDialog(context,{_,h,m->hour=h;minute=m},hour,minute,true).show()},modifier=Modifier.fillMaxWidth()) { Text("وقت التنبيه: "+String.format(Locale.getDefault(),"%02d:%02d",hour,minute)) }
+     Button(onClick={TimePickerDialog(context,{_,h,m->hour=h;minute=m},hour,minute,true).show()},modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(16.dp),colors=ButtonDefaults.buttonColors(containerColor=wine)) { Text("وقت التنبيه: "+String.format(Locale.getDefault(),"%02d:%02d",hour,minute)) }
      Text("أيام التكرار",fontWeight=FontWeight.Bold)
      Row(horizontalArrangement=Arrangement.spacedBy(4.dp)) {
       listOf(Calendar.SATURDAY to "س",Calendar.SUNDAY to "ح",Calendar.MONDAY to "ن",Calendar.TUESDAY to "ث",Calendar.WEDNESDAY to "ر",Calendar.THURSDAY to "خ",Calendar.FRIDAY to "ج").forEach { (day,label) ->
@@ -122,10 +127,10 @@ class MainActivity : ComponentActivity() {
      OutlinedButton(onClick={
       val intent=Intent(RingtoneManager.ACTION_RINGTONE_PICKER).putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE,RingtoneManager.TYPE_ALARM).putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE,"اختر صوت المنبّه").putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,if(sound.isNotBlank()) Uri.parse(sound) else null)
       soundPicker.launch(intent)
-     },modifier=Modifier.fillMaxWidth()) { Text("♫ اختيار صوت أو نغمة: $soundName") }
+     },modifier=Modifier.fillMaxWidth(),shape=RoundedCornerShape(16.dp),colors=ButtonDefaults.buttonColors(containerColor=wine)) { Text("♫ اختيار صوت أو نغمة: $soundName") }
     }
    },
-   confirmButton={ TextButton(onClick={
+   confirmButton={ Button(onClick={
     if(title.isNotBlank()) {
      val item=AlarmItem(System.currentTimeMillis(),title.trim(),hour,minute,days,sound,soundName,true)
      saveAlarm(item)
@@ -135,7 +140,7 @@ class MainActivity : ComponentActivity() {
      }
     }
     showDialog=false
-   }) { Text("حفظ وتفعيل") } },
+   },shape=RoundedCornerShape(16.dp),colors=ButtonDefaults.buttonColors(containerColor=wine)) { Text("حفظ وتفعيل") } },
    dismissButton={TextButton(onClick={showDialog=false}){Text("إلغاء")}}
   )
  }
