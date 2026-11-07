@@ -4,7 +4,7 @@
  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
  <uses-permission android:name="android.permission.WAKE_LOCK"/>
- <application android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="سيطر على وقتك" android:allowBackup="true">
+ <application android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="سيطر على وقتك" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:allowBackup="true">
   <activity android:name=".AlarmRingingActivity" android:exported="false" android:showWhenLocked="true" android:turnScreenOn="true"/>
   <activity android:name=".MainActivity" android:exported="true">
    <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
