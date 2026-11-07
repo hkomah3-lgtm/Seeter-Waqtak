@@ -108,6 +108,15 @@ class MainActivity : ComponentActivity() {
      } }
     }
     item { Text("ملاحظة: اسمح للتطبيق بالإشعارات والمنبّهات الدقيقة من إعدادات الهاتف حتى يعمل التنبيه في موعده.",style=MaterialTheme.typography.bodySmall) }
+    item {
+     Card(Modifier.fillMaxWidth(),shape=RoundedCornerShape(20.dp),colors=CardDefaults.cardColors(containerColor=Color.White),elevation=CardDefaults.cardElevation(defaultElevation=2.dp)) {
+      Column(Modifier.fillMaxWidth().padding(18.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(6.dp)) {
+       Text("Seeter-Waqtak",style=MaterialTheme.typography.titleMedium,fontWeight=FontWeight.ExtraBold,color=wine)
+       Text("تطبيق صنع بواسطة كرار",style=MaterialTheme.typography.bodyLarge,fontWeight=FontWeight.Bold,color=wine)
+       Text("© 2026 كرار. جميع الحقوق محفوظة.",style=MaterialTheme.typography.bodySmall,color=Color(0xFF9A6475))
+      }
+     }
+    }
    }
   }
   if(showDialog) AlertDialog(
