@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -78,10 +77,13 @@ class AlarmReceiver: BroadcastReceiver() {
  override fun onReceive(context:Context,intent:Intent?) {
   val id=intent?.getLongExtra("id",-1L) ?: -1L
   val item=AlarmStore.load(context).firstOrNull{it.id==id} ?: return
-  if(!item.enabled)return
+  // A one-time alarm is marked disabled after its first ring. Still allow its
+  // explicit five-minute snooze to ring once.
+  val isSnooze = intent?.action == "com.seeterwaqtak.SNOOZE"
+  if(!item.enabled && !isSnooze)return
   showAlarm(context,item)
-  if(item.days.isNotEmpty()) AlarmStore.schedule(context,item)
-  else {
+  if(item.days.isNotEmpty() && item.enabled) AlarmStore.schedule(context,item)
+  else if(!isSnooze) {
    AlarmStore.save(context,AlarmStore.load(context).map{if(it.id==id)it.copy(enabled=false)else it})
   }
  }
